@@ -1,8 +1,7 @@
 mod randomizer;
 
-use std::{collections::HashMap, process};
+use std::{process};
 
-use rand::prelude::*;
 use randomizer::*;
 
 pub fn run(mut config: Config){
