@@ -1,31 +1,34 @@
+use std::{collections::HashMap, process};
+
 use rand::prelude::*;
 
 pub fn run(config: Config){
-    
+    let map = generate_map(config.key);
 }
 
-pub fn gen_rand_u8(seed: u64, inputChar: char) -> u8 {
+pub fn gen_rand_u8(seed: u64, input_char: char) -> u8 {
     let mut rng = StdRng::seed_from_u64(seed);
-    let randomInteger: u8 = rng.gen_range(0..26);
-    ((inputChar as u8 + randomInteger) % 26) + 'a' as u8
+    let random_integer: u8 = rng.gen_range(0..26);
+    ((input_char as u8 + random_integer) % 26) + 'a' as u8
 }
 
-pub fn rand_from_vec(seed: u64, mut inputVec: Vec<u8>) -> Vec<u8>{
+pub fn generate_map(seed: u64) -> HashMap<char, char> {
     let mut rng = StdRng::seed_from_u64(seed);
     
-    let mut result: Vec<u8> = vec![];
+    let mut result: HashMap<char, char> = HashMap::new();
+    let mut input_vec: Vec<u8> = (0..26).collect();
     
-    for i in (0..inputVec.len()){
-        let mut randIndex: usize = rng.gen_range(0..inputVec.len() as usize);
-        let rand = inputVec.get(randIndex).unwrap();
-        result.push(*rand);
-        inputVec.swap_remove(randIndex);
+    for i in 0..26u8 {
+        let rand_index: usize = rng.gen_range(0..input_vec.len() as usize);
+        let rand = input_vec.get(rand_index).unwrap();
+        result.insert((i + 'a' as u8) as char, (*rand + 'a' as u8) as char);
+        input_vec.swap_remove(rand_index);
     }
     result
 }
 
 pub struct Config {
-    pub key: String,
+    pub key: u64,
     pub text: String,
 }
 
@@ -35,7 +38,10 @@ impl Config{
             return Err("Not enough arguments")
         }
         
-        let key = args[1].clone();
+        let key:u64 = args[1].clone().parse().unwrap_or_else(|_err|{
+            eprintln!("Key must be an unsigned 64 bit integer");
+            process::exit(1)
+        });
         let text = args[2].clone();
 
         Ok(Config {
@@ -50,14 +56,14 @@ mod tests{
     use crate::*;
 
     #[test]
-    fn print_random(){
-        let vektor: Vec<u8> = (0..26).collect();
-        let outVektor: Vec<u8> = rand_from_vec(12, vektor);
-        let mut i = 0;
-        for val in outVektor{
-            println!("{} -> {}",(i + 'a' as u8) as char, (val + 'a' as u8) as char);
-            i += 1;
+    pub fn print_random(){
+        let out_vektor = generate_map(12);
+        // let i = out_vektor.iter();
+    
+        for val in out_vektor{
+            println!("{}", val.0);
         }
+    
         // assert_eq!(26, outVektor.len());
     }
 }
