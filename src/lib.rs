@@ -1,6 +1,6 @@
 mod randomizer;
 
-use std::{process};
+use std::process;
 
 use randomizer::*;
 
