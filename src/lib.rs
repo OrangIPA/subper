@@ -5,8 +5,19 @@ use std::{collections::HashMap, process};
 use rand::prelude::*;
 use randomizer::*;
 
-pub fn run(config: Config){
+pub fn run(mut config: Config){
+    config.text = config.text.to_ascii_lowercase();
     let map = generate_map(config.key);
+    let mut result: String = String::new();
+
+    for chars in config.text.chars(){
+        if chars == ' ' {
+            result = format!("{} ", result);
+            continue;
+        }
+        result = format!("{}{}", result, map.get(&chars).unwrap());
+    }
+    println!("{}", result)
 }
 
 pub struct Config {

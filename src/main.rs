@@ -1,6 +1,6 @@
 use std::{env, process};
 
-use subper::Config;
+use subper::{Config, run};
 fn main() {
     let args: Vec<String> = env::args().collect();
 
@@ -8,5 +8,6 @@ fn main() {
         eprintln!("Problem parsing argument: {}", err);
         process::exit(1);
     });
+    run(config);
 }
 
