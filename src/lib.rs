@@ -10,11 +10,13 @@ pub fn run(mut config: Config){
     let mut result: String = String::new();
 
     for chars in config.text.chars(){
-        if chars == ' ' {
-            result = format!("{} ", result);
+        if let Some(x) = map.get(&chars){
+            result = format!("{}{}", result, x);
+
+        }else {
+            result = format!("{}{}", result, chars);
             continue;
         }
-        result = format!("{}{}", result, map.get(&chars).unwrap());
     }
     println!("{}", result)
 }
