@@ -1,12 +1,12 @@
-use std::collections::HashMap;
 use rand::prelude::*;
+use std::collections::HashMap;
 
 pub fn generate_map(seed: u64) -> HashMap<char, char> {
     let mut rng = StdRng::seed_from_u64(seed);
-    
+
     let mut result: HashMap<char, char> = HashMap::new();
     let mut input_vec: Vec<u8> = (0..26).collect();
-    
+
     for i in 0..26u8 {
         let rand_index: usize = rng.gen_range(0..input_vec.len() as usize);
         let rand = input_vec.get(rand_index).unwrap();
