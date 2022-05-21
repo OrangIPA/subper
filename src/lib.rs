@@ -6,7 +6,11 @@ use randomizer::*;
 
 pub fn run(mut config: Config) {
     config.text = config.text.to_ascii_lowercase();
-    let map = generate_map(config.key);
+    let map = match config.mode {
+        Mode::Encrypt => generate_map(config.key),
+        Mode::Decrypt => inverse_map(config.key),
+    };
+    
     let mut result: String = String::new();
 
     for chars in config.text.chars() {
@@ -17,12 +21,18 @@ pub fn run(mut config: Config) {
             continue;
         }
     }
-    println!("{}", result)
+    println!("{}", result);
+}
+
+pub enum Mode {
+    Encrypt,
+    Decrypt,
 }
 
 pub struct Config {
     pub key: u64,
     pub text: String,
+    pub mode: Mode,
 }
 
 impl Config {
@@ -37,7 +47,16 @@ impl Config {
         });
         let text = args[2].clone();
 
-        Ok(Config { key, text })
+        let mode = match &args[3].to_lowercase()[0..] {
+            "e" => Ok(Mode::Encrypt),
+            "d" => Ok(Mode::Decrypt),
+            _ => Err(())
+        }.unwrap_or_else(|_err|{
+            eprintln!("invalid mode");
+            process::exit(1);
+        });
+
+        Ok(Config { key, text, mode })
     }
 }
 
